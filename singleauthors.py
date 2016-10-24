@@ -10,7 +10,7 @@ def SingleAuthors(txt):
             docnumstr = m[5:].strip()
         elif m.startswith('@'):
             #If it says it has only one author, which is when it cannot find semicolon
-            if m.find(';') == -1: 
+            if m.find(';') == -1 and len(m[1:].strip()) > 0: 
                 singledocs[docnumstr] = m[1:].strip()
         else:
             continue
@@ -18,13 +18,14 @@ def SingleAuthors(txt):
 
 def main():
     #read in file
-    filename = "test.txt"
+    filename = "CiteSeerX.txt"
     f = file(filename, 'r')
     txt = f.read()
     singleList = SingleAuthors(txt)
+    wf = file('output.txt', 'w')
+    wf.write(str(singleList))
     
+    wf.close() 
     f.close()
-    print singleList
-    print len(singleList)
 main()
 
