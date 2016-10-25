@@ -1,3 +1,4 @@
+from bow import bow
 
 def SingleAuthors(txt):
     splitwords = txt.split("#")
@@ -21,10 +22,12 @@ def main():
     filename = "CiteSeerX.txt"
     f = file(filename, 'r')
     txt = f.read()
+    global singleList
     singleList = SingleAuthors(txt)
     wf = file('output.txt', 'w')
     wf.write(str(singleList))
-    
+    cleaned = bow()
+    print cleaned[0]
     wf.close() 
     f.close()
 main()
