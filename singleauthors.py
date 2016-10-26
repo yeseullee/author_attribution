@@ -18,6 +18,7 @@ def SingleAuthors(txt):
     return singledocs
 
 def main():
+    '''
     #read in file
     filename = "CiteSeerX.txt"
     f = file(filename, 'r')
@@ -26,9 +27,10 @@ def main():
     singleList = SingleAuthors(txt)
     wf = file('output.txt', 'w')
     wf.write(str(singleList))
+    wf.close()
+    f.close()
+    '''
     cleaned = bow(singleList)
     print cleaned
-    wf.close() 
-    f.close()
 main()
 
