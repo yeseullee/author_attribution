@@ -26,8 +26,8 @@ def main():
     singleList = SingleAuthors(txt)
     wf = file('output.txt', 'w')
     wf.write(str(singleList))
-    cleaned = bow()
-    print cleaned[0]
+    cleaned = bow(singleList)
+    print cleaned
     wf.close() 
     f.close()
 main()

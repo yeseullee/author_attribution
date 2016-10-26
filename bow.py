@@ -1,9 +1,10 @@
 #Steps to bag of words
 
 from nltk.corpus import stopwords
-from sklearn.feature_Extraction.txt import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 import numpy
 import os.path
+import re
 
 def txt_to_words(txt):
     #1. Remove non-letters (numbers, punctuations, formulas, etc.) and replace with " "
@@ -16,8 +17,8 @@ def txt_to_words(txt):
 
     #3. In Python, searching a set is much faster than searching a list. So stop words to a set. Then remove stop words.
 
-    stopwords = set(stopwords.words("english"))
-    words = [w for w in words_lower if not w in stopwords]
+    stop_words = set(stopwords.words("english"))
+    words = [w for w in words_lower if not w in stop_words]
 
     #4. Join the words back into one string separated by space.
 
@@ -28,24 +29,24 @@ def stringToPath(docname):
     a = docname.split('.')
     path = ""
     for i in range(1,len(a)):
-        path += "/" + str(docname[i])
-    return path
+        path += "/" + str(a[i])
+    return path + "/" + docname + ".txt"
 
-def bow():
+def bow(singleList):
     #Use txt_to_words function over all the files and convert them to useful txt strings. Append it to cleaned_txt
-    global singleList
     docnames = singleList.keys()
     cleaned_txt = []
-    numDocs = 1000
+    numDocs = 10
     for name in docnames:
-        path = "/txt/" + stringToPath(name)
+        path = "/scratch4/yeseul/docs/txt" + stringToPath(name)
+        print path
         if os.path.isfile(path):
             f = file(path, 'r')
             txt = f.read()
             f.close()
             cleaned_txt.append(txt_to_words(txt))
             numDocs = numDocs - 1
-        
+       	    print str(numDocs) 
         if numDocs <= 0:
             break
     return cleaned_txt
