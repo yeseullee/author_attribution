@@ -30,7 +30,6 @@ def main():
     wf.close()
     f.close()
     '''
-    cleaned = bow(singleList)
-    print cleaned
+    bow()
 main()
 
