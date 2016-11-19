@@ -1,5 +1,6 @@
 #Steps to bag of words
 
+from utils import stringToPath
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
@@ -21,63 +22,6 @@ def txt_to_words(txt):
 
     #4. Join the words back into one string separated by space.
     return(" ".join(words))
-
-def stringToPath(docname):
-    a = docname.split('.')
-    path = ""
-    for i in range(1,len(a)):
-        path += "/" + str(a[i])
-    return path + "/" + docname + ".txt"
-
-#make_train_test_docs(singleList, 50000)
-def make_train_test_docs(singleMap, docnum):
-
-    #This is for changing (author,title):docname to docname:author pairs
-    #The previous version was for removing duplicates. Now we need the latter.
-    singleList = dict()
-    for k in singleMap.keys():
-        singleList[singleMap[k]] = k[0]
-
-    docnames = singleList.keys()
-    numTrainD = 0
-    numTestD = 0
-    numDocs = 0
-    train_doc_authors = []
-
-    authornames = file('author_names.txt', 'w')
-    trainf = file('train_docs.txt', 'w')
-    train_auth = file('train_authors.txt', 'w')
-    testf = file('test_docs.txt', 'w')
-    test_auth = file('test_authors.txt', 'w')
-
-    for name in docnames:
-        path = "/scratch4/yeseul/docs/txt" + stringToPath(name)
-        print path
-
-        if os.path.isfile(path):
-            author = singleList[name]
-            if author in train_doc_authors:
-                testf.write(name+";")
-                test_auth.write(str(train_doc_authors.index(author))+";")
-                numTestD = numTestD + 1
-            else:
-                train_doc_authors.append(author)
-                authornames.write(author+";")
-                trainf.write(name+";")
-                train_auth.write(str(train_doc_authors.index(author))+";")
-                numTrainD = numTrainD + 1
-
-            numDocs = numDocs +1
-            print str(numDocs)
-        if numDocs >= docnum:
-            break
-    authornames.close()
-    trainf.close()
-    testf.close()
-    train_auth.close()
-    test_auth.close()
-    print "train = " + str(numTrainD)
-    print "test = " + str(numTestD)
 
 #This function is to give cleaned txt of the file list.
 #filelist is the list of all paper filenames.
@@ -186,5 +130,5 @@ def main():
     testlist = r.split(';')
     cleanfiles(testlist, 'cleaned_test_docs.txt')
     '''
-    bow()
+    #bow()
 main()
