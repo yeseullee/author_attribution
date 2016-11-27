@@ -23,6 +23,14 @@ def SingleAuthors(txt):
     return singledocs
 
 #Make a map of (authorname:[doc1, doc2, ...]) from CiteSeer.txt
+'''
+    #read in file
+    with open("CiteSeerX.txt",'r') as f:
+ 	txt = f.read()
+        authormap = author_to_docs_mapping(txt)
+        with open('authormap.txt', 'w') as g:
+            g.write(str(authormap))
+'''
 def author_to_docs_mapping(txt):
     splitwords = txt.split("#")
     authormap = dict()
@@ -43,7 +51,6 @@ def author_to_docs_mapping(txt):
                 path = "/scratch4/yeseul/docs/txt" + stringToPath(docnumstr)
 
                 if os.path.isfile(path):
-                    print "hi"
                     if authorname in authormap and authormap[authorname] != None:
                         #If already in the map
                         print str(authorname) + " " + str(authormap[authorname])
@@ -58,12 +65,6 @@ def author_to_docs_mapping(txt):
     
 def main():
     
-    #read in file
-    with open("CiteSeerX.txt",'r') as f:
-        txt = f.read()
-        authormap = author_to_docs_mapping(txt)
-        with open('authormap.txt', 'w') as g:
-            g.write(str(authormap))
     ''' 
     singleList = SingleAuthors(txt)
     make_train_test_docs(singleList, 50000)

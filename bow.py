@@ -1,3 +1,4 @@
+#author: Yeseul Lee
 #Steps to bag of words
 
 from utils import stringToPath
@@ -8,35 +9,6 @@ from sklearn import metrics
 import numpy as np
 import os.path
 import re
-
-def txt_to_words(txt):
-    #1. Remove non-letters (numbers, punctuations, formulas, etc.) and replace with " "
-    letters_only = re.sub("[^a-zA-Z]", " ", txt)
-
-    #2. Convert to lower case and split into individual words
-    words_lower = letters_only.lower().split()
-
-    #3. In Python, searching a set is much faster than searching a list. So stop words to a set. Then remove stop words.
-    stop_words = set(stopwords.words("english"))
-    words = [w for w in words_lower if not w in stop_words]
-
-    #4. Join the words back into one string separated by space.
-    return(" ".join(words))
-
-#This function is to give cleaned txt of the file list.
-#filelist is the list of all paper filenames.
-def cleanfiles(filelist, outputfilename):
-    #cleaned_txt = []
-    outf = file(outputfilename, 'w')
-    for name in filelist:
-        path = "/scratch4/yeseul/docs/txt" + stringToPath(name)
-        print path
-        if os.path.isfile(path):
-            f = file(path, 'r')
-            txt = f.read()
-            f.close()
-            outf.write(txt_to_words(txt)+';')
-    outf.close()
 
 def bow():
     
@@ -130,5 +102,5 @@ def main():
     testlist = r.split(';')
     cleanfiles(testlist, 'cleaned_test_docs.txt')
     '''
-    #bow()
+    bow()
 main()

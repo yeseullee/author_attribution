@@ -1,7 +1,8 @@
-#Yeseul Lee
+#Author: Yeseul Lee
 #This file has a utility of functions I need for preparing and processing for each method.
-
+from nltk.corpus import stopwords
 import os.path
+import ast, re
 
 #This function is used to convert the string name of the file to a path.
 def stringToPath(docname):
@@ -11,7 +12,97 @@ def stringToPath(docname):
         path += "/" + str(a[i])
     return path + "/" + docname + ".txt"
 
+def txt_to_words(txt):
+    #1. Remove non-letters (numbers, punctuations, formulas, etc.) and replace with " "
+    letters_only = re.sub("[^a-zA-Z]", " ", txt)
 
+    #2. Convert to lower case and split into individual words
+    words_lower = letters_only.lower().split()
+
+    #3. In Python, searching a set is much faster than searching a list. So stop words to a set. Then remove stop words.
+    stop_words = set(stopwords.words("english"))
+    words = [w for w in words_lower if not w in stop_words]
+
+    #4. Join the words back into one string separated by space.
+    return(" ".join(words))
+
+#This function is to give cleaned txt of the file list.
+#filelist is the list of all paper filenames.
+def cleanfiles(filelist, outputfilename):
+    #cleaned_txt = []
+    outf = file(outputfilename, 'w')
+    for name in filelist:
+        path = "/scratch4/yeseul/docs/txt" + stringToPath(name)
+        print path
+        if os.path.isfile(path):
+            f = file(path, 'r')
+            txt = f.read()
+            f.close()
+            outf.write(txt_to_words(txt)+';')
+    outf.close()
+
+#filelist = [[d1,d2,d3,...], [dh], ...] 
+#filelist now has lists of docs. if more than one, combine them.
+def cleanfiles2(filelist, outputfilename):
+    outf = file(outputfilename, 'w')
+    for files in filelist:
+        txt = ""
+        for i in range(0,len(files)):
+            path = "/scratch4/yeseul/docs/txt" + stringToPath(files[i])
+            print path
+            if os.path.isfile(path):
+                f = file(path, 'r')
+                txt += f.read() + " "
+                f.close()
+        outf.write(txt_to_words(txt)+';')
+    outf.close()
+
+#2nd version of the function.
+#Here it divides 25% to test set and 75% to train set.
+#No need for test_docs.txt or train_docs.txt but directly makes cleaned version.
+def make_train_test_docs2(authormapfilename):
+    authormap = {}
+    with open(authormapfilename, 'r') as f:
+        txt = f.read()
+        authormap = ast.literal_eval(txt)
+    	
+    #Checking if the file had something.
+    if len(authormap) == 0:
+        print("Wrong file name")
+        return
+
+    #Files
+    f_trainauthors = file("train_authors.txt", "w")
+    f_testauthors = file("test_authors.txt", "w")
+    f_authornames = file("author_names.txt", "w")
+
+    authorlist = []
+    traindoclist = []
+    testdoclist = []
+    #For each key and value of the map, take only the 3,4,5-authors 
+    #and put one to test and the rest combined to train docs.    
+    for k,v in authormap.items():
+        if len(v) < 3 or len(v) > 5:
+            continue
+        #where 3 <= len(v) <= 5
+        authorname = k
+        #Write author names
+        authorlist.append(authorname)
+        f_authornames.write(str(authorname) + ";")
+        f_trainauthors.write(str(authorlist.index(authorname)) + ";")
+        f_testauthors.write(str(authorlist.index(authorname)) + ";") #For now we will make them the same order.
+        #Write train doc -- all but one
+        traindoclist.append(v[1:])
+        #Write test doc -- one (the first)
+        testdoclist.append([v[0]])
+
+    cleanfiles2(traindoclist, 'cleaned_train_docs.txt')
+    cleanfiles2(testdoclist, 'cleaned_test_docs.txt')
+
+    f_trainauthors.close()
+    f_testauthors.close()
+    f_authornames.close()     
+        
 #This is where I make one to one mapping of author to doc training set
 # and testing set of docs written by those authors in training set.
 #make_train_test_docs(singleList, 50000)
@@ -120,3 +211,7 @@ def save_docs_to_folder(filename, directoryname):
             f.close()
     inputf.close()
 
+def main():
+    make_train_test_docs2('authormap.txt')
+
+#main()
