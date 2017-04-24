@@ -401,5 +401,5 @@ def main():
     d = r.split(';')
     cleanfiles(d,'cleaned_test_docs.txt')
   
-#identify_authorship_prob()
-pick_multiauthor_docs()
+identify_authorship_prob()
+#pick_multiauthor_docs()
