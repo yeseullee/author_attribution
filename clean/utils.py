@@ -370,9 +370,9 @@ def identify_authorship_prob():
     # Result
     resultlist = []
 
-    # How many docs to try.
-    n = 1000
-    for docname in multidocs[:n]:
+    # How many docs to try = multidocs[:n]
+    
+    for docname in multidocs:
         doc = clean1file(docname)        
         bow = dictionary.doc2bow(doc.split())
         vec_lda = lda[bow]
